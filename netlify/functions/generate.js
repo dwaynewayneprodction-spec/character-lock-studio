@@ -1,26 +1,65 @@
 export async function handler(event) {
-  const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN;
+  try {
+    const token = process.env.REPLICATE_API_TOKEN;
+    const body = JSON.parse(event.body || "{}");
 
-  const { prompt } = JSON.parse(event.body);
+    if (!token) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: "Missing REPLICATE_API_TOKEN" })
+      };
+    }
 
-  const response = await fetch("https://api.replicate.com/v1/predictions", {
-    method: "POST",
-    headers: {
-      "Authorization": `Token ${REPLICATE_API_TOKEN}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      version: "black-forest-labs/flux-1.1-pro",
-      input: {
-        prompt: prompt
-      }
-    })
-  });
+    let modelUrl;
+    let input;
 
-  const data = await response.json();
+    if (body.type === "image") {
+      modelUrl =
+        "https://api.replicate.com/v1/models/black-forest-labs/flux-kontext-pro/predictions";
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify(data)
-  };
+      input = {
+        prompt: body.prompt,
+        input_image: body.file,
+        aspect_ratio: "match_input_image"
+      };
+    } else if (body.type === "video") {
+      modelUrl =
+        "https://api.replicate.com/v1/models/bytedance/seedance-2.0-fast/predictions";
+
+      input = {
+        prompt: body.prompt,
+        video: body.file,
+        duration: 5
+      };
+    } else {
+      modelUrl =
+        "https://api.replicate.com/v1/models/black-forest-labs/flux-schnell/predictions";
+
+      input = {
+        prompt: body.prompt || "cinematic image"
+      };
+    }
+
+    const response = await fetch(modelUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+        Prefer: "wait"
+      },
+      body: JSON.stringify({ input })
+    });
+
+    const data = await response.json();
+
+    return {
+      statusCode: response.status,
+      body: JSON.stringify(data)
+    };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message })
+    };
+  }
 }
