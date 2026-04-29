@@ -1,16 +1,32 @@
-async function demo() {
-  const prompt = document.getElementById("prompt").value;
-  const status = document.getElementById("status");
+export async function handler(event) {
+  try {
+    const token = process.env.REPLICATE_API_TOKEN;
+    const { prompt } = JSON.parse(event.body || "{}");
 
-  status.textContent = "Sending to AI...";
+    const response = await fetch("https://api.replicate.com/v1/models/black-forest-labs/flux-schnell/predictions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Token ${token}`,
+        "Content-Type": "application/json",
+        "Prefer": "wait"
+      },
+      body: JSON.stringify({
+        input: {
+          prompt: prompt || "cinematic image"
+        }
+      })
+    });
 
-  const res = await fetch("/.netlify/functions/generate", {
-    method: "POST",
-    body: JSON.stringify({ prompt })
-  });
+    const data = await response.json();
 
-  const data = await res.json();
-
-  console.log(data);
-  status.textContent = "AI request sent. Check Replicate predictions for the result.";
+    return {
+      statusCode: response.status,
+      body: JSON.stringify(data)
+    };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message })
+    };
+  }
 }
