@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Character Lock Studio</title>
+  <meta name="description" content="AI character consistency app that keeps faces and characters the same while changing backgrounds.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="brand">
+      <div class="logo">CL</div>
+      <span>Character Lock Studio</span>
+    </div>
+    <a class="navBtn" href="#try">Try Demo</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="heroText">
+        <p class="eyebrow">AI video & image editing</p>
+        <h1>Keep the same character. Change everything else.</h1>
+        <p class="sub">
+          Upload a person or character, lock the face and body, then change the background,
+          lighting, or scene without losing the original look.
+        </p>
+        <div class="actions">
+          <a class="primary" href="#try">Start Upload</a>
+          <a class="secondary" href="#features">See Features</a>
+        </div>
+      </div>
+      <div class="mockup">
+        <div class="screen">
+          <div class="topbar"></div>
+          <div class="person"></div>
+          <div class="wall"></div>
+          <div class="caption">Face Protected • Background Only</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="features">
+      <h2>Built for creators who need consistency</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>Face Lock</h3>
+          <p>Protects the original face so the AI does not remake the person.</p>
+        </div>
+        <div class="card">
+          <h3>Background Replace</h3>
+          <p>Change rooms, walls, sets, and cinematic backgrounds while keeping the character.</p>
+        </div>
+        <div class="card">
+          <h3>Film Look</h3>
+          <p>Add clean lighting, white walls, soft contrast, and cinematic color treatment.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="try" class="tryBox">
+      <h2>Upload Demo</h2>
+      <p>This front page is ready. The AI engine connects later to your backend/GPU server.</p>
+      <div class="upload">
+        <input id="fileInput" type="file" accept="image/*,video/*">
+        <textarea id="prompt" placeholder="Example: bright cinematic white room, white walls, soft natural light"></textarea>
+        <button onclick="demo()">Generate Preview</button>
+      </div>
+      <p id="status"></p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 Character Lock Studio. Built for AI character consistency.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
