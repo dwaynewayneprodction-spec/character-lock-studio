@@ -1,13 +1,16 @@
-function demo() {
-  const file = document.getElementById("fileInput").files[0];
+async function demo() {
   const prompt = document.getElementById("prompt").value;
   const status = document.getElementById("status");
 
-  if (!file) {
-    status.textContent = "Upload an image or video first.";
-    return;
-  }
+  status.textContent = "Sending to AI...";
 
-  status.textContent =
-    "Demo received: " + file.name + ". The AI backend/GPU engine gets connected in the next build step.";
+  const res = await fetch("/.netlify/functions/generate", {
+    method: "POST",
+    body: JSON.stringify({ prompt })
+  });
+
+  const data = await res.json();
+
+  console.log(data);
+  status.textContent = "AI request sent. Check Replicate predictions for the result.";
 }
